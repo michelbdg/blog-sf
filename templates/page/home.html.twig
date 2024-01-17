@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello PageController!{% endblock %}
+
+{% block body %}
+
+<a href={{ path('category', {category: 'Frontend'}) }}>Voir Frontend</a>
+{{ dump(posts) }}
+
+
+{% endblock %}
