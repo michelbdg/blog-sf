@@ -7,5 +7,5 @@
 <a href={{ path('category', {category: 'Frontend'}) }}>Voir Frontend</a>
 {{ dump(posts) }}
 
-
+{{ knp_pagination_render(posts) }}
 {% endblock %}

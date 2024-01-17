@@ -4,20 +4,31 @@ namespace App\Controller;
 
 use App\Repository\CategoryRepository;
 use App\Repository\PostRepository;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\BrowserKit\Request;
+use Symfony\Component\HttpFoundation\Request; 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class PageController extends AbstractController
 {
-    #[Route('/', name: 'home')]
+    #[Route('/', name: 'home', methods: ['GET'])]
     public function index(
-        PostRepository $postRepository
+        Request $request,
+        PostRepository $postRepository,
+        CategoryRepository $categoryRepository,
+        PaginatorInterface $paginator
     ): Response
     {
+        $posts = $paginator->paginate(
+            $postRepository->findAll(), // Request
+            $request->query->getInt('page', 1), // Page number
+            10
+        );
+
         return $this->render('page/home.html.twig', [
-            'posts' => $postRepository->findAll()
+            'posts' => $posts,
+            'categories' => $categoryRepository->findAll()
         ]);
     }
 
@@ -28,7 +39,7 @@ class PageController extends AbstractController
         Request $request
     ): Response
     {
-        $category = $request->$this->get('category');
+        $category = $request->get('category');
         return $this->render('page/home.html.twig', [
             'posts' => $categoryRepository->findOne(
                 ['name' => $category]
